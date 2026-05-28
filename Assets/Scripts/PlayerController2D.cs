@@ -18,6 +18,9 @@ public class PlayerController2D : MonoBehaviour
     [SerializeField] private float groundCheckRadius = 0.2f;
     [SerializeField] private LayerMask groundLayer;
 
+    [Header("Trap Interaction Settings")]
+    [SerializeField] private LayerMask trapLayer;
+
     [Header("Animation Tuning")]
     [Tooltip("Adjusts how fast the running animation loops relative to player movement.")]
     [SerializeField] private float runSpeedAnimationMultiplier = 0.15f;
@@ -72,11 +75,38 @@ public class PlayerController2D : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        // Check if the collided object's layer is included in the trapLayer mask
+        if (((1 << collision.gameObject.layer) & trapLayer) != 0)
+        {
+            HandleTrapDamage();
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // Fallback check if your spikes use standard rigid colliders instead of triggers
+        if (((1 << collision.gameObject.layer) & trapLayer) != 0)
+        {
+            HandleTrapDamage();
+        }
+    }
+
+    private void HandleTrapDamage()
+    {
+        // Bounce the player upward with exactly half the configured jump force
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce * 0.5f);
+
+        // Fire the animation trigger to transition from Any State to playerHurt
+        animator.SetTrigger("playerHurt");
+    }
+
     private void UpdateAnimations()
     {
         // 1. Pass the raw Y velocity into the Animator (+ value = going up, - value = falling)
         animator.SetFloat("yVelocity", rb.linearVelocity.y);
-        
+
         // 2. Pass horizontal speed check to switch between Idle and Run states
         animator.SetFloat("Speed", Mathf.Abs(rb.linearVelocity.x));
         animator.SetBool("isGrounded", isGrounded);
@@ -85,7 +115,7 @@ public class PlayerController2D : MonoBehaviour
         // 3. Dynamically set the playback speed modifier parameter for the Running loop
         // The faster the player runs across the floor, the higher this float climbs.
         float calculatedAnimSpeed = Mathf.Abs(rb.linearVelocity.x) * runSpeedAnimationMultiplier;
-        
+
         // Avoid setting animation speed to a flat 0 so the character doesn't totally freeze on calculation frames
         if (moveInput.x != 0)
         {
