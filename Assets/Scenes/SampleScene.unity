@@ -88433,7 +88433,7 @@ MonoBehaviour:
     m_Bits: 128
   knockbackHorizontalForce: 6
   knockbackDuration: 1
-  runSpeedAnimationMultiplier: 0.15
+  runSpeedAnimationMultiplier: 0.1
 --- !u!95 &988726170
 Animator:
   serializedVersion: 7
