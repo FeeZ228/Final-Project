@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b6d5cf7a955333e4d83d449bb049fa82
+guid: 4e0f7bee4eb0f7a4db3743b0d93349bb
 AudioImporter:
   externalObjects: {}
   serializedVersion: 8
@@ -15,7 +15,7 @@ AudioImporter:
   platformSettingOverrides: {}
   forceToMono: 0
   normalize: 1
-  loadInBackground: 1
+  loadInBackground: 0
   ambisonic: 0
   3D: 1
   userData: 
